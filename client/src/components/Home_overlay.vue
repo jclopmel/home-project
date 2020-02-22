@@ -1,18 +1,25 @@
 <template>
-	<v-overlay
+		<v-overlay
+		color="white"
 		:value="welcomeOverlay"
 		absolute
 		light
-		opacity="0"
+		opacity="1"
 	>
 		<div class="d-flex align-center justify-center flex-column">
-			<h1 class="mb-12 grey--text text--darken-1">Hi, It's your Home!</h1>
+			<h1
+				class="mb-12 grey--text text--darken-1 fadeOut"
+				v-bind:style=" overlayOpacity ? 'opacity:1' : 'opacity:0'"
+			>
+				Hi, It's your Home!
+			</h1>
 			<v-btn
 				tile
 				outlined
 				x-large
-				class="grey--text text--darken-1"
-				@click="welcomeOverlay = false"
+				class="grey--text text--darken-1 fadeOut"
+				v-bind:style=" overlayOpacity ? 'opacity:1' : 'opacity:0'"
+				@click="closeOverlay()"
 			>
 				Start
 			</v-btn>
@@ -23,17 +30,39 @@
 </template>
 
 <script>
+
 export default {
 	name: 'HomeOverlay',
+	components: {
+	},
 	data(){
 		return{
-			welcomeOverlay: true
-
+			welcomeOverlay: true,
+			overlayOpacity: false
 		}
+	},
+	methods:{
+		closeOverlay(){
+			this.overlayOpacity = false;
+			setTimeout(()=>{
+				this.welcomeOverlay = false;
+			}, 1000)
+		}
+	},
+	mounted(){
+		setTimeout(()=>{
+			this.overlayOpacity = true;
+		}, 2000)
+	},
+	watch: {
+
 	}
 }
 </script>
 
 <style scoped>
-
+	.fadeOut{
+		transition: opacity 1s;
+	}
 </style>
+
