@@ -33,6 +33,9 @@ export default {
 		appModules(){
 			return this.$store.state.appModules;
 		}
+	},
+	mounted: function (){
+
 	}
 }
 </script>

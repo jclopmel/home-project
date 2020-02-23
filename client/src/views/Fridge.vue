@@ -15,6 +15,7 @@
 			</v-row>
 			<v-row>
 				<v-col cols="12">
+
 					<v-list two-line>
 						<v-list-item
 							v-for="(item, i) in productsInStorage"
@@ -36,7 +37,7 @@
 							</v-list-item-content>
 
 							<v-list-item-action>
-								<v-btn icon @click="addProduct(item.id)">
+								<v-btn icon @click="addProduct(item._id)">
 									<v-icon large color="grey--text text--darken-1">mdi-plus</v-icon>
 								</v-btn>
 							</v-list-item-action>
@@ -55,7 +56,7 @@ export default {
 
 	},
 	data: () => ({
-
+		//collection: 'fridge_collection'
 	}),
 	computed:{
 		productsInStorage(){
@@ -69,7 +70,7 @@ export default {
 	},
 	mounted(){
 		setInterval(()=>{
-			this.$store.commit('takeOffProduct', "01")
+			this.$store.commit('takeOffProduct', "5e5255aeedb04f1644db6e9c")
 		}, 3000)
 	}
 }
