@@ -45,7 +45,6 @@ const store = new Vuex.Store({
 				state.productsInStorage[p].quantity--;
 			}
 			
-			// if(state.productsInStorage[p].quantity == 0) localStorage.clear()
 		},
 		setProductsInStorage(state, data){
 			state.productsInStorage = data;
@@ -143,6 +142,29 @@ const store = new Vuex.Store({
 			let t1 = Object.values(payload);
 			let t2 = t1.findIndex((e) => {return e == undefined})
 			return t2 < 0;
+		},
+		checkOfflineChanges({dispatch}, payload){
+			let changes = [];
+
+			if( Object.values(localStorage).length > 0 ){
+				changes = Object.values(localStorage).map((e)=>{
+					return JSON.parse(e);
+				})
+
+				changes.forEach((e)=>{
+					let obj = {
+						collection: payload,
+						obj: e
+					}
+					dispatch("modifyFromCollection", obj)
+				})
+
+				localStorage.clear()
+
+				
+			}
+
+
 		}
 	}
 });

@@ -14,6 +14,11 @@ export default {
 	data: () => ({
 		collection: 'fridge_collection'
 	}),
+	computed:{
+		onlineStatus(){
+			return this.$store.state.onlineStatus
+		},
+	},
 	methods:{
 		checkOnlineConnection(){
 			let _vue = this;
@@ -27,6 +32,12 @@ export default {
 	mounted: function (){
 		this.$store.dispatch("getCollection", this.collection)
 		this.checkOnlineConnection();
+	},
+	watch: {
+	    onlineStatus: function (val) {
+	    	//Check if changes during offline timelapse
+	    	if(val) this.$store.dispatch("checkOfflineChanges", this.collection)
+	    }
 	}
 };
 </script>
