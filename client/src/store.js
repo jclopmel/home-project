@@ -21,24 +21,50 @@ const store = new Vuex.Store({
 			}
 		],
 		productsInStorage: [],
+		onlineStatus: true,
+		newName: "",
+		newQuantity: 0,
+		newIcon: "",
+		Icons: [
+	        'mdi-food-apple',
+	        'mdi-fruit-pineapple',
+	        'mdi-cup-water',
+	        'mdi-pizza',
+	        'mdi-noodles'
+	      ],
 	},
 	mutations:{
 		addProduct(state, id){
-			let p = state.productsInStorage.findIndex((e)=>{return e._id == id})
+			let p = state.productsInStorage.findIndex((e)=>{return e.id == id})
 			state.productsInStorage[p].quantity++;
+
 		},
 		takeOffProduct(state, id){
-			let p = state.productsInStorage.findIndex((e)=>{return e._id == id})
+			let p = state.productsInStorage.findIndex((e)=>{return e.id == id})
 			if(state.productsInStorage[p].quantity > 0){
 				state.productsInStorage[p].quantity--;
 			}
+			
+			// if(state.productsInStorage[p].quantity == 0) localStorage.clear()
 		},
 		setProductsInStorage(state, data){
 			state.productsInStorage = data;
+		},
+		setOnlineStatus(state, data){
+			state.onlineStatus = data;
+		},
+		setNewName(state, data){
+			state.newName = data;
+		},
+		setNewQuantity(state, data){
+			state.newQuantity = data;
+		},
+		setNewIcon(state, data){
+			state.newIcon = data;
 		}
 	},
 	actions:{
-		getCollection({commit}, collection){
+		getCollection(commit, collection){
 			let _vue = this
 			axios({
 				method: 'get',
@@ -50,21 +76,20 @@ const store = new Vuex.Store({
 			.then((res) => {
 				console.log(res)
 				_vue.commit('setProductsInStorage', res.data)
-				console.log(res.data)
 			})
 			.catch((err) => {
 				console.log(err)
 			})			
 
 		},
-		addToCollection(collection, obj){
+		addToCollection(payload){
 			axios({
 				method: 'post',
 				url: 'http://localhost:5000/api/posts',
 				params: {
 					action: 'add',
-					collection: collection,
-					obj: obj
+					collection: payload.collection,
+					obj: payload.obj
 				}
 			})
 			.then((res) => {
@@ -74,13 +99,13 @@ const store = new Vuex.Store({
 				console.log(err)
 			})
 		},
-		deleteFromCollection(collection, id){
+		deleteFromCollection(payload){
 			axios({
 				method: 'delete',
 				url: 'http://localhost:5000/api/posts',
 				params: {
-					collection: collection,
-					id: id
+					collection: payload.collection,
+					id: payload.id
 				}
 			})
 			.then((res) => {
@@ -90,23 +115,34 @@ const store = new Vuex.Store({
 				console.log(err)
 			})
 		},
-		modifyFromCollection(collection, id, obj){
-			axios({
-				method: 'post',
-				url: 'http://localhost:5000/api/posts',
-				params: {
-					action: 'modify',
-					collection: collection,
-					id: id,
-					val: obj
-				}
-			})
-			.then((res) => {
-				console.log(res.data)
-			})
-			.catch((err) => {
-				console.log(err)
-			})
+		modifyFromCollection({state}, payload){
+			if(!state.onlineStatus){
+				localStorage.setItem( payload.obj.id, JSON.stringify(payload.obj) )
+
+			}else{
+				axios({
+					method: 'post',
+					url: 'http://localhost:5000/api/posts',
+					params: {
+						action: 'modify',
+						collection: payload.collection,
+						val: payload.obj
+					}
+				})
+				.then((res) => {
+					console.log(res.data)
+				})
+				.catch((err) => {
+					console.log(err)
+				})
+			}
+
+			
+		},
+		checkCorrectObject(payload){
+			let t1 = Object.values(payload);
+			let t2 = t1.findIndex((e) => {return e == undefined})
+			return t2 < 0;
 		}
 	}
 });

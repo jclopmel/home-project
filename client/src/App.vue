@@ -14,8 +14,19 @@ export default {
 	data: () => ({
 		collection: 'fridge_collection'
 	}),
+	methods:{
+		checkOnlineConnection(){
+			let _vue = this;
+			let onlineStatus = function(){
+				_vue.$store.commit("setOnlineStatus", navigator.onLine)
+			}
+			window.addEventListener("online", onlineStatus);
+			window.addEventListener("offline", onlineStatus);
+		}
+	},
 	mounted: function (){
 		this.$store.dispatch("getCollection", this.collection)
+		this.checkOnlineConnection();
 	}
 };
 </script>
