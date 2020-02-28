@@ -43,7 +43,16 @@ router.post("/", (req, res) => {
 
 	switch(action){
 		case "add":
-			var object = JSON.parse( req.query["obj"] );
+			var val 	= JSON.parse(req.query["val"]);
+			var product = (val.name).toString();
+			var quantity = parseInt(val.quantity);
+			var icon 	= (val.icon).toString();
+
+			var obj = {
+				product: product,
+				quantity: quantity,
+				icon: icon
+			}
 			
 			mongoDB.connect(uri, { useUnifiedTopology: true }, (err, database)=>{
 				if (err) throw err;
@@ -52,7 +61,7 @@ router.post("/", (req, res) => {
 				let collection = db.collection(collectionName);
 
 				try {
-					collection.insertOne( object, (err, result) => {
+					collection.insertOne( obj, (err, result) => {
 						if (err) throw err;
 						res.send(result.ok);
 						database.close();
@@ -70,12 +79,12 @@ router.post("/", (req, res) => {
 		case "modify":
 			var val 	= JSON.parse(req.query["val"]);
 
-			let id 		= (val.id).toString();
-			let product = (val.name).toString();
-			let quantity = parseInt(val.quantity);
-			let icon 	= (val.icon).toString();
+			var id 		= (val.id).toString();
+			var product = (val.name).toString();
+			var quantity = parseInt(val.quantity);
+			var icon 	= (val.icon).toString();
 
-			let obj = {
+			var obj = {
 				product: product,
 				quantity: quantity,
 				icon: icon

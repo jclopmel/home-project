@@ -8,11 +8,26 @@
 	>
 		<div class="d-flex align-center justify-center flex-column">
 			<h1
-				class="mb-12 grey--text text--darken-1 fadeOut"
+				class="grey--text text--darken-1 fadeOut"
 				v-bind:style=" overlayOpacity ? 'opacity:1' : 'opacity:0'"
 			>
 				Hi, It's your Home!
 			</h1>
+			<v-container>
+				<v-row class="d-flex align-center justify-center">
+					<v-col
+					cols="12"
+					md="7"
+					>
+						<v-img
+						class="fadeOut"
+						src="../assets/img/home_logo.png"
+						alt="Home App">
+						</v-img>
+					</v-col>
+				</v-row>
+			</v-container>
+			
 			<v-btn
 				tile
 				outlined
@@ -37,7 +52,7 @@ export default {
 	},
 	data(){
 		return{
-			welcomeOverlay: true,
+			welcomeOverlay: false,
 			overlayOpacity: false
 		}
 	},

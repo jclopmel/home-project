@@ -34,12 +34,12 @@ const store = new Vuex.Store({
 	      ],
 	},
 	mutations:{
-		addProduct(state, id){
+		addProduct(state, id){						// Adds one to product by ID
 			let p = state.productsInStorage.findIndex((e)=>{return e.id == id})
 			state.productsInStorage[p].quantity++;
 
 		},
-		takeOffProduct(state, id){
+		takeOffProduct(state, id){					// takeOff one from product by ID
 			let p = state.productsInStorage.findIndex((e)=>{return e.id == id})
 			if(state.productsInStorage[p].quantity > 0){
 				state.productsInStorage[p].quantity--;
@@ -49,21 +49,21 @@ const store = new Vuex.Store({
 		setProductsInStorage(state, data){
 			state.productsInStorage = data;
 		},
-		setOnlineStatus(state, data){
+		setOnlineStatus(state, data){				// Commit for onlineStatus State
 			state.onlineStatus = data;
 		},
-		setNewName(state, data){
+		setNewName(state, data){					// Commit for newName State
 			state.newName = data;
 		},
-		setNewQuantity(state, data){
+		setNewQuantity(state, data){				// Commit for newQuantity State
 			state.newQuantity = data;
 		},
-		setNewIcon(state, data){
+		setNewIcon(state, data){					// Commit for newIcon State
 			state.newIcon = data;
 		}
 	},
 	actions:{
-		getCollection(commit, collection){
+		getCollection(commit, collection){		// Collect data from DB by collection name
 			let _vue = this
 			axios({
 				method: 'get',
@@ -73,7 +73,6 @@ const store = new Vuex.Store({
 				}
 			})
 			.then((res) => {
-				console.log(res)
 				_vue.commit('setProductsInStorage', res.data)
 			})
 			.catch((err) => {
@@ -81,24 +80,30 @@ const store = new Vuex.Store({
 			})			
 
 		},
-		addToCollection(payload){
-			axios({
-				method: 'post',
-				url: 'http://localhost:5000/api/posts',
-				params: {
-					action: 'add',
-					collection: payload.collection,
-					obj: payload.obj
-				}
-			})
-			.then((res) => {
-				console.log(res.data)
-			})
-			.catch((err) => {
-				console.log(err)
-			})
+		addToCollection({state}, payload){					// Add data to DB by ID and collection
+			if(!state.onlineStatus){
+				console.log("Check Internet Connection")
+
+			}else{
+				console.log(payload.obj)
+				axios({
+					method: 'post',
+					url: 'http://localhost:5000/api/posts',
+					params: {
+						action: 'add',
+						collection: payload.collection,
+						val: payload.obj
+					}
+				})
+				.then((res) => {
+					console.log(res.data)
+				})
+				.catch((err) => {
+					console.log(err)
+				})
+			}
 		},
-		deleteFromCollection(payload){
+		deleteFromCollection(payload){					// Delete data from DB by ID and collection
 			axios({
 				method: 'delete',
 				url: 'http://localhost:5000/api/posts',
@@ -114,7 +119,7 @@ const store = new Vuex.Store({
 				console.log(err)
 			})
 		},
-		modifyFromCollection({state}, payload){
+		modifyFromCollection({state}, payload){				// Modify DB by ID and collection
 			if(!state.onlineStatus){
 				localStorage.setItem( payload.obj.id, JSON.stringify(payload.obj) )
 
@@ -135,15 +140,14 @@ const store = new Vuex.Store({
 					console.log(err)
 				})
 			}
-
 			
 		},
-		checkCorrectObject(payload){
+		checkCorrectObject(payload){					// Chech if undefined values in object
 			let t1 = Object.values(payload);
 			let t2 = t1.findIndex((e) => {return e == undefined})
 			return t2 < 0;
 		},
-		checkOfflineChanges({dispatch}, payload){
+		checkOfflineChanges({dispatch}, payload){		// If items in localStorage, set the changes in DB and clear them by ID
 			let changes = [];
 
 			if( Object.values(localStorage).length > 0 ){
@@ -157,13 +161,12 @@ const store = new Vuex.Store({
 						obj: e
 					}
 					dispatch("modifyFromCollection", obj)
+					.then(()=>{
+						localStorage.removeItem(e.id)
+					})
 				})
-
-				localStorage.clear()
-
 				
 			}
-
 
 		}
 	}

@@ -23,14 +23,41 @@
 			</v-row>
 			<v-row>
 				<v-col cols="12">
-
-					<v-list two-line>
-						<v-list-item
-							v-for="(item, i) in productsInStorage"
+					
+					<div v-if="productsInStorage.length < 1">
+						<v-alert
+						v-if="!onlineStatus"
+						class="pa-1 pa-md-3"
+						type="warning"
+						color="orange lighten-4">
+							Lost internet connection
+						</v-alert>
+						<v-alert
+						v-else
+						class="pa-1 pa-md-3"
+						type="info"
+						color="blue lighten-4">
+							You shall add a new product
+						</v-alert>
+						<v-skeleton-loader
+							v-if="productsInStorage.length < 1"
+							v-for="i in 2"
 							:key="i"
+							ref="skeleton"
+							type="list-item-avatar-two-line"
+							tile
+						></v-skeleton-loader>
+					</div>
+					<v-list
+					v-else
+					two-line>
+						<v-list-item
+						class="pa-0"
+						v-for="(item, i) in productsInStorage"
+						:key="i"
 						>
 							<v-list-item-avatar>
-								<v-icon v-if="item.quantity > 0" class="grey--text text--darken-1">mdi-food-apple</v-icon>
+								<v-icon v-if="item.quantity > 0" class="grey--text text--darken-1">{{item.icon}}</v-icon>
 								<v-icon v-else class="red--text text--lighten-2">mdi-exclamation</v-icon>
 							</v-list-item-avatar>
 
@@ -55,6 +82,7 @@
 			</v-row>
 		</v-container>
 
+		<!-- Dialog for product adding -->
 		<v-dialog
 		v-model="openFridgeDialog"
 		max-width="600">
@@ -105,7 +133,7 @@
 					<v-spacer></v-spacer>
 					<v-btn
 					:disabled="formControl"
-					color="grey--text text--darken-1" text @click="openFridgeDialog = false">Add</v-btn>
+					color="grey--text text--darken-1" text @click="addProduct()">Add</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -121,10 +149,13 @@ export default {
 
 	},
 	data: () => ({
-		openFridgeDialog: true,
+		openFridgeDialog: false,
 		collection: 'fridge_collection'
 	}),
 	computed:{
+		onlineStatus(){
+			return this.$store.state.onlineStatus
+		},
 		Icons(){
 			return this.$store.state.Icons
 		},
@@ -160,25 +191,33 @@ export default {
 		}
 	},
 	methods:{
-		addProduct(id){
+		addProduct(){
 			let _vue = this;
-			this.$store.commit('addProduct', id)
-			let obj = this.productsInStorage.find((e)=>{return e.id == id})
-
 			let payload = {
 				collection: this.collection,
-				obj: obj
+				obj: {
+					"name": this.newName.toString(),
+					"quantity": parseInt(this.newQuantity),
+					"icon": this.newIcon.toString()
+				}
 			}
 
-			this.$store.dispatch("checkCorrectObject", payload)
+			this.$store.dispatch("checkCorrectObject", payload.obj)
 			.then((r)=>{
-				if(r == true) _vue.$store.dispatch("modifyFromCollection", payload)
+				if(r == true) _vue.$store.dispatch("addToCollection", payload)
 			})
 			.catch((err)=>{
 				console.log(err)
 			})
 
+			// this.resetFridgeDialog();
 			
+		},
+		resetFridgeDialog(){
+			this.newName = "";
+			this.newQuantity = "";
+			this.newIcon = "";
+			this.openFridgeDialog = false
 		}
 	},
 	mounted(){
