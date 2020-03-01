@@ -16,7 +16,7 @@
 				<v-spacer></v-spacer>
 			</v-row>
 			<v-row
-			class="m-33-vh">
+			>
 				<v-col
 				cols="12"
 				sm="6"
@@ -83,7 +83,7 @@
 				</v-col>
 			</v-row>
 
-			<v-row class="m-33-vh">
+			<v-row >
 				<v-col
 				cols="12"
 				sm="6"

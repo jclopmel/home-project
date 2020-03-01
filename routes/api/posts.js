@@ -63,7 +63,7 @@ router.post("/", (req, res) => {
 				try {
 					collection.insertOne( obj, (err, result) => {
 						if (err) throw err;
-						res.send(result.ok);
+						res.send(result);
 						database.close();
 					});
 

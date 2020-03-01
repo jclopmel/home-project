@@ -26,12 +26,12 @@ const store = new Vuex.Store({
 		newQuantity: 0,
 		newIcon: "",
 		Icons: [
-	        'mdi-food-apple',
-	        'mdi-fruit-pineapple',
-	        'mdi-cup-water',
-	        'mdi-pizza',
-	        'mdi-noodles'
-	      ],
+		'mdi-food-apple',
+		'mdi-fruit-pineapple',
+		'mdi-cup-water',
+		'mdi-pizza',
+		'mdi-noodles'
+		],
 	},
 	mutations:{
 		addProduct(state, id){						// Adds one to product by ID
@@ -39,7 +39,7 @@ const store = new Vuex.Store({
 			state.productsInStorage[p].quantity++;
 
 		},
-		takeOffProduct(state, id){					// takeOff one from product by ID
+		takeOffProduct(state, id){					// takes Off one from product by ID
 			let p = state.productsInStorage.findIndex((e)=>{return e.id == id})
 			if(state.productsInStorage[p].quantity > 0){
 				state.productsInStorage[p].quantity--;
@@ -60,6 +60,12 @@ const store = new Vuex.Store({
 		},
 		setNewIcon(state, data){					// Commit for newIcon State
 			state.newIcon = data;
+		},
+		deleteProduct(state, data){
+			state.productsInStorage = state.productsInStorage.filter(e => e.id != data);
+		},
+		newProduct(state, data){
+			state.productsInStorage.push(data);
 		}
 	},
 	actions:{
@@ -85,7 +91,7 @@ const store = new Vuex.Store({
 				console.log("Check Internet Connection")
 
 			}else{
-				console.log(payload.obj)
+				let _vue = this;
 				axios({
 					method: 'post',
 					url: 'http://localhost:5000/api/posts',
@@ -97,48 +103,57 @@ const store = new Vuex.Store({
 				})
 				.then((res) => {
 					console.log(res.data)
+					payload.obj['id'] = res.data.insertedId;
+					_vue.commit('newProduct', payload.obj)
 				})
 				.catch((err) => {
 					console.log(err)
 				})
 			}
 		},
-		deleteFromCollection(payload){					// Delete data from DB by ID and collection
-			axios({
-				method: 'delete',
-				url: 'http://localhost:5000/api/posts',
-				params: {
-					collection: payload.collection,
-					id: payload.id
-				}
-			})
-			.then((res) => {
-				console.log(res.data)
-			})
-			.catch((err) => {
-				console.log(err)
-			})
-		},
-		modifyFromCollection({state}, payload){				// Modify DB by ID and collection
+		deleteFromCollection({state, commit}, payload){					// Delete data from DB by ID and collection
 			if(!state.onlineStatus){
-				localStorage.setItem( payload.obj.id, JSON.stringify(payload.obj) )
+				console.log("Check Internet Connection")
 
 			}else{
+				let _vue = this;
 				axios({
-					method: 'post',
+					method: 'delete',
 					url: 'http://localhost:5000/api/posts',
 					params: {
-						action: 'modify',
 						collection: payload.collection,
-						val: payload.obj
+						id: payload.id
 					}
 				})
 				.then((res) => {
-					console.log(res.data)
+					_vue.commit('deleteProduct', payload.id)
 				})
 				.catch((err) => {
 					console.log(err)
 				})
+			}
+		},
+		modifyFromCollection({state}, payload){				// Modify DB by ID and collection
+			console.log(payload, state.onlineStatus)
+			if(!state.onlineStatus){
+				localStorage.setItem( payload.obj.id, JSON.stringify(payload.obj) )
+
+			}else{
+				// axios({
+				// 	method: 'post',
+				// 	url: 'http://localhost:5000/api/posts',
+				// 	params: {
+				// 		action: 'modify',
+				// 		collection: payload.collection,
+				// 		val: payload.obj
+				// 	}
+				// })
+				// .then((res) => {
+				// 	console.log(res.data)
+				// })
+				// .catch((err) => {
+				// 	console.log(err)
+				// })
 			}
 			
 		},
