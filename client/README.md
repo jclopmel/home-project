@@ -1,4 +1,4 @@
-#Home App - Frontend with vuetify
+# Home App - Frontend with vuetify
 
 ## Requirements
 - Node
