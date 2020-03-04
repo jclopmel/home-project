@@ -48,8 +48,10 @@ export default {
 	name: 'WorkingOnContainer',
 	components: {
 	},
-	data(){
+	data: function () {
+		return {
 
+		}
 	},
 	methods:{
 

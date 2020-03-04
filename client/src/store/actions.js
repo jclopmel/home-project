@@ -1,75 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 import axios from 'axios'
-
-Vue.use(Vuex)
-
-export const state = {
-	appModules:[
-		{"icon": "mdi-food-apple",
-		"path": "/fridge"
-		},
-		{"icon": "mdi-water",
-		"path": "/water"
-		},
-		{"icon": "mdi-flash",
-		"path": "/electricity"
-		},
-		{"icon": "mdi-lock",
-		"path": "/security"
-		}
-	],
-	productsInStorage: [],
-	onlineStatus: true,
-	newName: "",
-	newQuantity: 0,
-	newIcon: "",
-	Icons: [
-	'mdi-food-apple',
-	'mdi-fruit-pineapple',
-	'mdi-cup-water',
-	'mdi-pizza',
-	'mdi-noodles'
-	],
-};
-export const mutations = {
-	addProduct(state, id){						// Adds one to product by ID
-		let p = state.productsInStorage.findIndex((e)=>{return e.id == id})
-		state.productsInStorage[p].quantity++;
-
-	},
-	takeOffProduct(state, id){					// takes Off one from product by ID
-		let p = state.productsInStorage.findIndex((e)=>{return e.id == id})
-		if(state.productsInStorage[p].quantity > 0){
-			state.productsInStorage[p].quantity--;
-		}
-		
-	},
-	setProductsInStorage(state, data){
-		state.productsInStorage = data;
-	},
-	setOnlineStatus(state, data){				// Commit for onlineStatus State
-		state.onlineStatus = data;
-	},
-	setNewName(state, data){					// Commit for newName State
-		state.newName = data;
-	},
-	setNewQuantity(state, data){				// Commit for newQuantity State
-		state.newQuantity = data;
-	},
-	setNewIcon(state, data){					// Commit for newIcon State
-		state.newIcon = data;
-	},
-	deleteProduct(state, data){
-		state.productsInStorage = state.productsInStorage.filter(e => e.id != data);
-	},
-	newProduct(state, data){
-		state.productsInStorage.push(data);
-	}
-};
-export const actions = {
+export default{
 	getCollection(commit, collection){		// Collect data from DB by collection name
-		let _vue = this
 		axios({
 			method: 'get',
 			url: 'http://localhost:5000/api/posts',
@@ -78,16 +9,14 @@ export const actions = {
 			}
 		})
 		.then((res) => {
-			_vue.commit('setProductsInStorage', res.data)
-			return res;
+			this.commit('setProductsInStorage', res.data)
 		})
 		.catch((err) => {
 			console.log(err)
-			return err;
 		})			
 
 	},
-	addToCollection({state}, payload){					// Add data to DB by ID and collection
+	addToCollection({state, dispatch, commit}, payload){					// Add data to DB by ID and collection
 		dispatch("onlineStatusVerify")
 		.finally(function(){
 
@@ -95,7 +24,6 @@ export const actions = {
 				console.log("Check Internet Connection")
 
 			}else{
-				let _vue = this;
 				axios({
 					method: 'post',
 					url: 'http://localhost:5000/api/posts',
@@ -108,7 +36,7 @@ export const actions = {
 				.then((res) => {
 					console.log(res.data)
 					payload.obj['id'] = res.data.insertedId;
-					_vue.commit('newProduct', payload.obj)
+					commit('newProduct', payload.obj)
 				})
 				.catch((err) => {
 					console.log(err)
@@ -116,7 +44,7 @@ export const actions = {
 			}
 		})
 	},
-	deleteFromCollection({state, commit, dispatch}, payload){					// Delete data from DB by ID and collection
+	deleteFromCollection({state, dispatch, commit}, payload){					// Delete data from DB by ID and collection
 
 		dispatch("onlineStatusVerify")
 		.finally(function(){
@@ -125,7 +53,6 @@ export const actions = {
 				console.log("Check Internet Connection")
 
 			}else{
-				let _vue = this;
 				axios({
 					method: 'delete',
 					url: 'http://localhost:5000/api/posts',
@@ -134,8 +61,8 @@ export const actions = {
 						id: payload.id
 					}
 				})
-				.then((res) => {
-					_vue.commit('deleteProduct', payload.id)
+				.then(() => {
+					commit('deleteProduct', payload.id)
 				})
 				.catch((err) => {
 					console.log(err)
@@ -143,7 +70,7 @@ export const actions = {
 			}
 		})
 	},
-	modifyFromCollection({state, commit, dispatch}, payload){				// Modify DB by ID and collection
+	modifyFromCollection({state, dispatch}, payload){				// Modify DB by ID and collection
 		
 		dispatch("onlineStatusVerify")
 		.finally(function(){
@@ -199,22 +126,16 @@ export const actions = {
 		}
 
 	},
-	onlineStatusVerify({state, commit, dispatch}){
+	onlineStatusVerify({commit}){				//Checks an online status connection by an axios request
 		axios({
 			method: 'get',
-			url: 'https://www.google.com'
+			url: 'https://www.zartis.com/'
 		})
-		.then((res) => {
+		.then(() => {
 			commit("setOnlineStatus", true)
 		})
-		.catch((err) => {
+		.catch(() => {
 			commit("setOnlineStatus", false)
 		})
 	}
-};
-
-export default new Vuex.Store({
-  state,
-  mutations,
-  actions
-})
+}

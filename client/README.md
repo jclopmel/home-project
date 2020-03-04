@@ -1,24 +1,15 @@
-# client
+#Home App - Frontend with vuetify
 
-## Project setup
-```
-npm install
-```
+## Requirements
+- Node
 
-### Compiles and hot-reloads for development
+## Project Setup
+Install dependencies with npm
 ```
-npm run serve
+$ npm install
 ```
-
-### Compiles and minifies for production
+Run client
 ```
-npm run build
+$ npm run serve
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Now must be ready at localhost:8080

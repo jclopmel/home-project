@@ -1,5 +1,5 @@
 <template>
-	<v-content>
+	<v-content class="pb-10">
 		<v-container
 			fill-height
 			class="d-flex align-center justify-center"
@@ -97,10 +97,16 @@
 							</v-list-item-content>
 
 							<v-list-item-action class="d-block">
-								<v-btn icon @click="modifyQuantity(item.id, 'less')">
+								<v-btn
+								class="less"
+								icon
+								@click="modifyQuantity(item.id, 'less')">
 									<v-icon large color="grey--text text--darken-1">mdi-minus</v-icon>
 								</v-btn>
-								<v-btn icon @click="modifyQuantity(item.id, 'more')">
+								<v-btn
+								class="more"
+								icon
+								@click="modifyQuantity(item.id, 'more')">
 									<v-icon large color="grey--text text--darken-1">mdi-plus</v-icon>
 								</v-btn>
 							</v-list-item-action>
@@ -126,6 +132,7 @@
 							cols="12"
 							>
 								<v-text-field
+									id="newName"
 									v-model="newName"
 									label="Name"
 									:rules="nameRules"
@@ -137,6 +144,7 @@
 							md="6"
 							>
 								<v-text-field
+									id="newQuantity"
 									v-model="newQuantity"
 									label="Quantity"
 									:rules="quantityRules"
@@ -148,6 +156,7 @@
 							md="6"
 							>
 								<v-select
+									id="newIcon"
 									v-model="newIcon"
 									:items="Icons"
 									label="Icon"
@@ -171,15 +180,16 @@
 			</v-card>
 		</v-dialog>
 
-
+		<menuBottomNavigation/>
 	</v-content>
 </template>
 
 <script>
-
+import menuBottomNavigation from '@/components/Menu_bottom_navigation';
+import { mapState, mapActions } from "vuex";
 export default {
 	components: {
-
+		menuBottomNavigation
 	},
 	data: () => ({
 		windowWidth: window.innerWidth,
@@ -205,7 +215,12 @@ export default {
 		]
 	}),
 	computed:{
-		onlineStatus(){
+		...mapState({
+			onlineStatus: 		state => state.onlineStatus,
+			Icons: 				state => state.Icons,
+			productsInStorage: 	state => state.productsInStorage
+		}),
+		/*onlineStatus(){
 			return this.$store.state.onlineStatus
 		},
 		Icons(){
@@ -213,7 +228,7 @@ export default {
 		},
 		productsInStorage(){
 			return this.$store.state.productsInStorage;
-		},
+		},*/
 		newName: {
 			get: function () {
 				return this.$store.state.newName
@@ -240,6 +255,12 @@ export default {
 		}
 	},
 	methods:{
+		...mapActions({
+			modifyFromCollection: "modifyFromCollection",
+			checkCorrectObject: "checkCorrectObject",
+			addToCollection: "addToCollection",
+			deleteFromCollection: "deleteFromCollection"
+		}),
 		modifyQuantity(id, type){
 			let _vue = this;
 
@@ -259,9 +280,9 @@ export default {
 				obj: obj
 			}
 
-			this.$store.dispatch("checkCorrectObject", payload)
+			this.checkCorrectObject(payload)
 			.then((r)=>{
-				if(r == true) _vue.$store.dispatch("modifyFromCollection", payload)
+				if(r == true) _vue.modifyFromCollection(payload)
 			})
 			.catch((err)=>{
 				console.log(err)
@@ -280,9 +301,9 @@ export default {
 				}
 			}
 
-			this.$store.dispatch("checkCorrectObject", payload.obj)
+			this.checkCorrectObject(payload.obj)
 			.then((r)=>{
-				if(r == true) _vue.$store.dispatch("addToCollection", payload)
+				if(r == true) _vue.addToCollection(payload)
 			})
 			.catch((err)=>{
 				console.log(err)
@@ -292,15 +313,14 @@ export default {
 			
 		},
 		deleteProduct(id){
-			let _vue = this;
 			let payload = {
 				collection: this.collection,
 				id: id.toString()
 			}
 
-			this.$store.dispatch("checkCorrectObject", payload)
+			this.checkCorrectObject(payload)
 			.then((r)=>{
-				if(r == true) _vue.$store.dispatch("deleteFromCollection", payload)
+				if(r == true) this.deleteFromCollection(payload)
 			})
 			.catch((err)=>{
 				console.log(err)
@@ -318,7 +338,3 @@ export default {
 	}
 }
 </script>
-
-<style scoped>
-	
-</style>

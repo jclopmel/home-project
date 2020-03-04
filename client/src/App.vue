@@ -28,7 +28,7 @@ export default {
 		checkOnlineConnection(){
 			let _vue = this;
 			let onlineStatus = function(){
-				_vue.$store.commit("setOnlineStatus", navigator.onLine)
+				_vue.$store.commit("setOnlineStatus", window.navigator.onLine)
 			}
 			window.addEventListener("online", onlineStatus);
 			window.addEventListener("offline", onlineStatus);
