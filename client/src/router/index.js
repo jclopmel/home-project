@@ -9,30 +9,31 @@ import Security from '@/views/Security';
 Vue.use(Router)
 
 export default new Router({
-  routes:[{
-	      path: "/",
-	      name: "Home",
-	      component: Home
-  		},
-  		{
-	      path: "/fridge",
-	      name: "Fridge",
-	      component: Fridge
-  		},
-  		{
-	      path: "/water",
-	      name: "Water",
-	      component: Water
-  		},
-  		{
-	      path: "/electricity",
-	      name: "Electricity",
-	      component: Electricity
-  		},
-  		{
-	      path: "/security",
-	      name: "Security",
-	      component: Security
-  		}
-    ]
+	mode: 'history',
+	routes:[{
+		path: "/",
+		name: "Home",
+		component: Home
+	},
+	{
+		path: "/fridge",
+		name: "Fridge",
+		component: Fridge
+	},
+	{
+		path: "/water",
+		name: "Water",
+		component: Water
+	},
+	{
+		path: "/electricity",
+		name: "Electricity",
+		component: Electricity
+	},
+	{
+		path: "/security",
+		name: "Security",
+		component: Security
+	}
+	]
 });

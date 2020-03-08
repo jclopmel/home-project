@@ -8,6 +8,7 @@
 	>
 		<v-btn
 		v-for="(item, i) in appModules"
+		:id="item.name"
 		:key="i"
 		@click=" $router.push(item.path) "
 		icon>

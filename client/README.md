@@ -13,3 +13,8 @@ Run client
 $ npm run serve
 ```
 Now must be ready at localhost:8080
+## Project testing
+Run Cypress
+```
+$ npx cypress open
+```

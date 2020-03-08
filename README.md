@@ -59,5 +59,14 @@ There are 9 already designed Jest and Vue-Unit-Testing tests, organized in diffe
 ```
 $ npm run test:unit
 ```
-
+#### Functional Testing
+There are 12 already designed Cypress tests in e2e.spec.js file. You can check them from /client folder and running next script:
+```
+$ npx cypress open
+```
+#### Alternative Functional Testing
+In order to check and compare Cypress vs Cypress-cucumber-preprocessor 8 additional scenarios are ready to be run. Just uncomment lines 18 and 21 in /client/cypress/plugins/index.js, change tested files in cypress.json in /client folder and run:
+```
+$ npx cypress open
+```
 Information related about how to run vue client is inside client folder. Just in case you only want to reproduce vue-cli.

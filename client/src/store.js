@@ -7,16 +7,20 @@ Vue.use(Vuex)
 export const state = {
 	appModules:[
 		{"icon": "mdi-food-apple",
-		"path": "/fridge"
+		"path": "/fridge",
+		"name": "fridge"
 		},
 		{"icon": "mdi-water",
-		"path": "/water"
+		"path": "/water",
+		"name": "water"
 		},
 		{"icon": "mdi-flash",
-		"path": "/electricity"
+		"path": "/electricity",
+		"name": "electricity"
 		},
 		{"icon": "mdi-lock",
-		"path": "/security"
+		"path": "/security",
+		"name": "security"
 		}
 	],
 	productsInStorage: [],

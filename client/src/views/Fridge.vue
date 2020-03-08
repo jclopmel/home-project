@@ -6,6 +6,7 @@
 		>
 			<v-row class="align-self-start d-flex">
 				<v-btn
+					id="backHomeBtn"
 					tile
 					icon
 					@click=" $router.push('/') "
@@ -14,6 +15,7 @@
 				</v-btn>
 				<v-spacer></v-spacer>
 				<v-btn
+					id="newProductForm"
 					tile
 					icon
 					@click="openFridgeDialog = true"
@@ -66,6 +68,7 @@
 								<v-menu bottom left>
 									<template v-slot:activator="{ on }">
 										<v-btn
+										class="productOptionsBtn"
 										x-small
 										icon
 										v-on="on"
@@ -74,7 +77,8 @@
 										</v-btn>
 									</template>
 
-									<v-list>
+									<v-list
+									class="deleteBtn">
 										<v-list-item
 											@click="deleteProduct(item.id)"
 										>
@@ -174,6 +178,7 @@
 					<v-btn color="grey--text text--darken-1" text @click="openFridgeDialog = false">Close</v-btn>
 					<v-spacer></v-spacer>
 					<v-btn
+					id="addProductBtn"
 					:disabled="!formControl"
 					color="grey--text text--darken-1" text @click="addProduct()">Add</v-btn>
 				</v-card-actions>
