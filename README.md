@@ -1,4 +1,4 @@
-#Home App - A Node & Vue Project
+# Home App - A Node & Vue Project
 This app is desgined to have 4 modules to offer an absolute management of your home from every device. Only module 1 is developed right now: A CRUD app with DB connection and offline features to manage users home storage.
 
 ## Features
